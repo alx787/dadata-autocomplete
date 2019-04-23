@@ -1,0 +1,148 @@
+##<link href="https://cdn.jsdelivr.net/npm/suggestions-jquery@18.8.0/dist/css/suggestions.min.css" type="text/css" rel="stylesheet" />
+<link href="$cdncss" type="text/css" rel="stylesheet" />
+#controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
+<input type="text" class="text long-field" name="$customField.id" id="$customField.id" value="$!value" onfocus="go_init(this)"/>
+
+<input type="hidden" id="dadata-key" value="$cdnkey"/>
+<input type="hidden" id="dadata-cdn" value="$cdnapi"/>
+
+
+<script type="text/javascript">
+
+
+function go_init(elem) {
+    var id = AJS.$("#$customField.id").attr("id") + "_check";
+    if (AJS.$("#" + id).size() == 0) {
+        AJS.$("#$customField.id").after("<div id='" + id + "' style='display:none'>0</div>");
+        go_exec();
+
+        ## console.log(AJS.$("input#dadata-key").val());
+        ## console.log($cdnapi);
+
+
+    }
+}
+
+function go_exec() {
+    jQuery.ls = function(url, callback) {
+        jQuery.ajax({
+            url: url,
+            dataType: 'script',
+            success: callback,
+            async: true
+        });
+    };
+
+    jQuery.ls(AJS.$("input#dadata-cdn").val(), function() {
+        var afp = AJS.$(".addressfromparty");
+        afpo = afp.first();
+        afpl = afp.length;
+        //k = "";
+        k = AJS.$("input#dadata-key").val();
+
+        function join(arr) {
+            var separator = arguments.length > 1 ? arguments[1] : ", ";
+            return arr.filter(function(n) {
+                return n
+            }).join(separator);
+        }
+
+        function makeAddressString(address){
+          return join([
+            join([address.data.street_type, address.data.street], " "),
+            join([address.data.house_type, address.data.house, address.data.block_type, address.data.block], " "),
+            join([address.data.settlement_type, address.data.settlement], " "), (address.data.city !== address.data.region && join([address.data.city_type, address.data.city], " ") || ""),
+            join([address.data.area_type, address.data.area], " "),
+            join([address.data.region_type, address.data.region], " ")
+            ]);
+        }
+
+        function formatSelected(suggestion){
+            var addressValue = "";
+            if (suggestion.data.address.data == null) {
+
+                addressValue = suggestion.data.address.value;
+
+                //try get postal code
+                var pcode = getPostCodeInAddress(suggestion.data.address.value);
+                if (pcode.length == 6) {
+                    addressValue = addressValue.substring(7).trim();
+                }
+;
+            } else {
+                addressValue = makeAddressString(suggestion.data.address);
+            }
+            return addressValue;
+        }
+
+        // get first 6 symbols from address
+        function getPostCodeInAddress(fulladdress) {
+            var mas = fulladdress.split(",");
+            if (mas.length == 0) {
+                return "";
+            }
+            if ((mas[0].length == 6) && (!isNaN(mas[0]))) {
+                return mas[0];
+            }
+            return "";
+        }
+
+        if ((afpl > 0) && (afpo)) {
+            afpo.suggestions({
+                token: k,
+                type: "ADDRESS"
+            });
+            // afpo.on("suggestions-fixdata", function(e, suggestion) {
+            //     if ((suggestion.data) && (AJS.$(".indexfromparty").length > 0)) 
+            //         AJS.$(".indexfromparty").first().val((suggestion.data.postal_code) ? suggestion.data.postal_code : "");
+            // });
+        };
+
+        AJS.$("#$customField.id").suggestions({
+            token: k,
+            type: "PARTY",
+            count: 5,
+            onSelect: function(suggestion) {
+                if (suggestion.data.name) 
+                    AJS.$("#$customField.id").val(join([suggestion.data.opf && suggestion.data.opf.short || "", suggestion.data.name.short || suggestion.data.name.full], " "));
+                if ((suggestion.data.address.value) && (afpl > 0)) {
+
+                    // console.log(formatSelected(suggestion));
+                    // console.log("====");
+
+                    //afpo.val(suggestion.data.address.value);
+                    afpo.val(formatSelected(suggestion));
+
+                    if (afp.suggestions()) {
+                        //afp.suggestions().fixData();
+                        //AJS.$(".indexfromparty").first().val((suggestion.data.postal_code) ? suggestion.data.postal_code : "");
+                        // console.log(suggestion);
+
+                        if (suggestion.data.address.data != null) {
+                            AJS.$(".indexfromparty").first().val((suggestion.data.address.data.postal_code) ? suggestion.data.address.data.postal_code : "");
+                        } else {
+                            AJS.$(".indexfromparty").first().val(getPostCodeInAddress(suggestion.data.address.value));
+                        }
+                    }
+
+                };
+                if ((suggestion.data.inn) && (AJS.$(".innfromparty").length > 0)) 
+                    AJS.$(".innfromparty").first().val(suggestion.data.inn);
+            }
+        });
+        AJS.$("#$customField.id").focus();
+        setTimeout(function() {
+            afpo.focus();
+            setTimeout(function() {
+                AJS.$("#summary").focus();
+                setTimeout(function() {
+                    AJS.$("#$customField.id").focus();
+                }, 200);
+            }, 200);
+        }, 200);
+    });
+}
+
+
+</script>
+#controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)

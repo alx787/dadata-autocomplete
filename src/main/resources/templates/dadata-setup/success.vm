@@ -1,0 +1,64 @@
+<html>
+<head>
+    <meta name="decorator" content="atl.admin"/>
+    <meta name="admin.active.section" content="admin_plugins_menu/dadata-section"/>
+##    $webResourceManager.requireResource("com.atlassian.auiplugin:aui-buttons")
+##    $webResourceManager.requireResource("com.atlassian.auiplugin:aui-select2")
+##    $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:message")
+##    $webResourceManager.requireResourcesForContext("com.atlassian.auiplugin:aui-experimental-iconfont")
+##    $webResourceManager.requireResourcesForContext("groupbosses")
+</head>
+
+<body>
+
+
+    <h2>Настройка Dadata</h2>
+    <form class="aui" method="post" action="DadataSetupAction!save.jspa">
+        <div class="field-group">
+            <label for="keyvalue">
+                access key<span class="aui-icon icon-required">(required)</span>
+            </label>
+            <input class="text long-field" type="text" name="cdnkey" value="$cdnkey">
+            <div class="description">
+                key for access to dadata functionality. for example
+            </div>
+
+        </div>
+        <div class="field-group">
+
+            <label for="cdnvalue">
+                cdn url<span class="aui-icon icon-required">(required)</span>
+            </label>
+            <input class="text long-field" type="text" name="cdnapi" value="$cdnapi">
+            <div class="description">
+                cdn for api. for example https://cdn.jsdelivr.net/npm/suggestions-jquery@18.8.0/dist/js/jquery.suggestions.min.js
+            </div>
+
+        </div>
+
+        <div class="field-group">
+
+            <label for="cssvalue">
+                css url<span class="aui-icon icon-required">(required)</span>
+            </label>
+            <input class="text long-field" type="text" name="cdncss" value="$cdncss">
+            <div class="description">
+                cdn for css. for example https://cdn.jsdelivr.net/npm/suggestions-jquery@18.8.0/dist/css/suggestions.min.css
+            </div>
+
+        </div>
+
+
+
+        <div class="buttons-container">
+            <div class="buttons">
+                <input class="button submit" type="submit" value="Сохранить" id="comment-save-button">
+            ##                    <a class="cancel" href="#">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+
+
+</body>
+</html>

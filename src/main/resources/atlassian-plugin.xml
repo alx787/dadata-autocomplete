@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="dadata-ru-general"/>
+  <!-- add our web resources -->
+  <web-resource key="dadata-ru-general-resources" name="dadata-ru-general Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="dadata-ru-general.css" location="/css/dadata-ru-general.css"/>
+    <resource type="download" name="dadata-ru-general.js" location="/js/dadata-ru-general.js"/>
+    <resource type="download" name="images/" location="/images"/>
+    <context>dadata-ru-general</context>
+  </web-resource>
+  <customfield-type class="ru.hloffice.plugins.jira.cf.Organization" i18n-name-key="ddorganizationcf.name" key="ddorganizationcf" name="dadata ddorganizationcf">
+    <description key="ddorganizationcf.description">dadata.ru party</description>
+    <resource location="/templates/customfields/ddorganization/view.vm" name="view" type="velocity"/>
+    <resource location="/templates/customfields/ddorganization/edit.vm" name="edit" type="velocity"/>
+  </customfield-type>
+  <customfield-type class="ru.hloffice.plugins.jira.cf.Address" i18n-name-key="ddaddresscf.name" key="ddaddresscf" name="dadata address">
+    <description key="ddaddresscf.description">dadata.ru address from party</description>
+    <resource location="/templates/customfields/ddaddress/view.vm" name="view" type="velocity"/>
+    <resource location="/templates/customfields/ddaddress/edit.vm" name="edit" type="velocity"/>
+  </customfield-type>
+  <customfield-type class="ru.hloffice.plugins.jira.cf.TaxNumber" i18n-name-key="ddtaxnumbercf.name" key="ddtaxnumbercf" name="dadata inn">
+    <description key="ddtaxnumbercf.description">dadata.ru inn from party</description>
+    <resource location="/templates/customfields/ddtaxnumber/view.vm" name="view" type="velocity"/>
+    <resource location="/templates/customfields/ddtaxnumber/edit.vm" name="edit" type="velocity"/>
+  </customfield-type>
+  <customfield-type class="ru.hloffice.plugins.jira.cf.ZipCode" i18n-name-key="ddzipcodecf.name" key="ddzipcodecf" name="dadata post office index">
+    <description key="ddzipcodecf.description">dadata.ru index from party</description>
+    <resource location="/templates/customfields/ddzipcode/view.vm" name="view" type="velocity"/>
+    <resource location="/templates/customfields/ddzipcode/edit.vm" name="edit" type="velocity"/>
+  </customfield-type>
+  <!--<customfield-searcher name="Text Searcher" i18n-name-key="text-searcher.name" key="text-searcher" class="com.atlassian.jira.issue.customfields.searchers.TextSearcher">-->
+  <customfield-searcher name="Text Searcher" i18n-name-key="text-searcher.name" key="text-searcher" class="ru.hloffice.plugins.jira.searchers.DaDataCFTextSearcher">
+    <description key="text-searcher.description">The Text Searcher Plugin</description>
+    <valid-customfield-type package="ru.hloffice.plugins.jira.dadata-autocomplete" key="ddorganizationcf"/>
+    <valid-customfield-type package="ru.hloffice.plugins.jira.dadata-autocomplete" key="ddaddresscf"/>
+    <valid-customfield-type package="ru.hloffice.plugins.jira.dadata-autocomplete" key="ddtaxnumbercf"/>
+    <valid-customfield-type package="ru.hloffice.plugins.jira.dadata-autocomplete" key="ddzipcodecf"/>
+    <!--<resource name="search" type="velocity" location="/templates/customfields/text-searcher/search.vm"/>-->
+    <resource name="search" type="velocity" location="/templates/customfields/text-searcher/search-basictext.vm"/>
+    <resource name="view" type="velocity" location="/templates/customfields/text-searcher/view-searcher-basictext.vm"/>
+  </customfield-searcher>
+  <!--<customfield-searcher name="Exact Text Searcher" i18n-name-key="exact-text-searcher.name" key="exact-text-searcher" class="com.atlassian.jira.issue.customfields.searchers.ExactTextSearcher">-->
+  <!--<description key="exact-text-searcher.description">The Exact Text Searcher Plugin</description>-->
+  <!--<valid-customfield-type package="ru.tm-office.plugins.jira" key="ddorganization"/>-->
+  <!--<resource name="search" type="velocity" location="/templates/customfields/exact-text-searcher/search.vm"/>-->
+  <!--</customfield-searcher>-->
+  <webwork1 key="dadata-setup" name="Dadata Setup" i18n-name-key="dadata-setup.name">
+    <description key="dadata-setup.description">The Dadata Setup Plugin</description>
+    <actions>
+      <action name="ru.hloffice.plugins.jira.setup.DadataSetupAction" alias="DadataSetupAction">
+        <view name="success">/templates/dadata-setup/success.vm</view>
+        <!--<view name="input">/templates/dadata-setup/input.vm</view>-->
+        <!--<view name="error">/templates/dadata-setup/error.vm</view>-->
+      </action>
+    </actions>
+  </webwork1>
+  <web-section name="dadata-section" i18n-name-key="dadata-section.name" key="dadata-section" location="admin_plugins_menu" weight="1000">
+    <description key="dadata.description">Dadata section Plugin</description>
+    <!--<label key="onlyoffice-section.label"/>-->
+    <label key="Dadata"/>
+  </web-section>
+  <web-item name="dadata-link" i18n-name-key="dadata.name" key="dadatalink" section="admin_plugins_menu/dadata-section" weight="1000">
+    <description key="dadatalink.description">Dadata link Plugin</description>
+    <!--<label key="onlyofficelink.label"></label>-->
+    <label key="Настройка Дадаты"></label>
+    <link linkId="dadatalink-link">/secure/DadataSetupAction!default.jspa</link>
+  </web-item>
+</atlassian-plugin>

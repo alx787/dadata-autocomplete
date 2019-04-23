@@ -1,0 +1,3 @@
+#controlHeader ($action $customField.id $customField.name $fieldLayoutItem.required $displayParameters.noHeader)
+<input type="text" class="text long-field addressfromparty" name="$customField.id" id="$customField.id" value="$!value" readonly="readonly"/>
+#controlFooter ($action $fieldLayoutItem.fieldDescription $displayParameters.noHeader)
